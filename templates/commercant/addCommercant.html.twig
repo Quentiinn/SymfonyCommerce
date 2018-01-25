@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <form method="post" action="{{ path('produit.validFormAdd') }}">
+        <div class="row">
+            <fieldset>
+                <legend>Creer un produit (twig)</legend>
+                <label>Nom :
+                    <input name="nom"  type="text"  size="18" value="{{donnees.noms|default('')}}" />
+                    {% if erreurs.nom is defined %}
+                        <small class="error">{{erreurs.nom}}</small>
+                    {% endif %}
+                </label>
+                <label>Type de commercant :
+                    <select name="idTypeCommercant">
+                        {% if  donnees.idTypeCommercant is not defined or donnees.idTypeCommercant is empty   %}
+                            <option value="">Veuillez sélectionner un produit</option>
+                        {% endif %}
+                        {% for typeCommercant in typeCommercants %}
+                            <option value="{{ typeCommercant.id }}"
+                                    {% if donnees.idTypeCommercant is defined and typeCommercant.id == donnees.idTypeCommercant %}selected{% endif %}>
+                                {{ typeCommercant.noms }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if erreurs.typeProduit_id is defined %}
+                        <small class="error">{{erreurs.typeProduit_id}}</small>
+                    {% endif %}
+                </label>
+                <label>Prix
+                    <input name="prix"  type="text"  size="18"  value="{{donnees.prixLocation|default('')}}"/>
+                    {% if erreurs.prix is defined %}
+                        <small class="error">{{erreurs.prix}}</small>
+                    {% endif %}
+                </label>
+                <label>Date de location
+                    <input name="date"  type="text"  size="18" value="{{donnees.dateLocation|default('')}}"/>
+                    {% if erreurs.date is defined %}
+                        <small class="error">{{erreurs.date}}</small>
+                    {% endif %}
+                </label>
+                <input type="submit" name="creerCommercant" value="créer" />
+            </fieldset>
+        </div>
+    </form>
+{% endblock %}

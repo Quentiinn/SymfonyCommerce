@@ -1,0 +1,32 @@
+{% extends "/base.html.twig" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <a href="{{ path('produit.add') }}"> Ajouter un commercant </a>
+            <table>
+                <caption>Recapitulatifs des commercants</caption>
+                <thead>
+                <tr><th>nom</th><th>id</th><th>type</th><th>prix</th>
+                    <th>opération</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for commercant in data if data is not empty %}
+                    <tr>
+                        <td>{{commercant.noms}}</td><td>{{commercant.id}}</td>
+                        <td>{{commercant.idTypeCommercant.noms | default("id Null")}}</td>
+                        <td>{{commercant.prixLocation}}</td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            <a href="{#{ path('produit.edit', {id: produit.id}) }#}">modifier</a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td>Pas de Produits</td></tr>
+                {% endfor %}
+                <tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

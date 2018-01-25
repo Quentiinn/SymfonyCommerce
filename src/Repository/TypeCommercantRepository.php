@@ -25,4 +25,13 @@ class TypeCommercantRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findIdAndLibelle()
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c.id,c.noms')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

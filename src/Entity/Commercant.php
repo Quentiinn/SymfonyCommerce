@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommercantRepository")
+ * @ORM\Table(name="commercants")
  */
 class Commercant
 {
@@ -86,10 +87,10 @@ class Commercant
     }
 
     /**
-     * @param date $dateInstallation
+     * @param \DateTime $dateInstallation
      * @return Commercant
      */
-    public function setDateInstallation(date $dateInstallation): Commercant
+    public function setDateInstallation(\DateTime $dateInstallation): Commercant
     {
         $this->dateInstallation = $dateInstallation;
         return $this;
@@ -114,9 +115,9 @@ class Commercant
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getIdTypeCommercant(): int
+    public function getIdTypeCommercant()
     {
         return $this->idTypeCommercant;
     }
@@ -125,7 +126,7 @@ class Commercant
      * @param int $idTypeCommercant
      * @return Commercant
      */
-    public function setIdTypeCommercant(int $idTypeCommercant): Commercant
+    public function setIdTypeCommercant($idTypeCommercant): Commercant
     {
         $this->idTypeCommercant = $idTypeCommercant;
         return $this;
