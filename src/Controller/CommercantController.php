@@ -9,8 +9,10 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
 
 class CommercantController extends Controller
 {
@@ -44,7 +46,7 @@ class CommercantController extends Controller
     }
 
     /**
-     * @Route("/produit/add",name="produit.add")
+     * @Route("/commercant/add",name="commercant.add")
      * @Method({"GET"})
      */
     public function addProduit(Request $request, Environment $twig, RegistryInterface $doctrine)
@@ -56,7 +58,7 @@ class CommercantController extends Controller
 
 
     /**
-     * @Route("/produit/validFormAdd",name="produit.validFormAdd")
+     * @Route("/commercant/validFormAdd",name="commercant.validFormAdd")
      * @Method({"POST"})
      */
     public function validFormAddAction(Request $request, Environment $twig, RegistryInterface $doctrine)
@@ -76,14 +78,11 @@ class CommercantController extends Controller
         if(! empty($erreurs))
         {
             $typeCommercants=$doctrine->getRepository(TypeCommercant::class)->findIdAndLibelle();
-
-
             return $this->render('commercant/addCommercant.html.twig', ['donnees'=>$donnees,'erreurs'=>$erreurs,'typeCommercants'=> $typeCommercants]);
         }
         else
         {
             $date = \DateTime::createFromFormat('d/m/Y', $donnees['date']);
-
             $idTypeCommercant=$doctrine->getRepository(TypeCommercant::class)->find($donnees['idTypeCommercant']);
             $commerce = new Commercant();
             $commerce->setNoms($donnees['nom']);
@@ -93,11 +92,26 @@ class CommercantController extends Controller
             $em=$doctrine->getManager();
             $em->persist($commerce);
             $em->flush();
-
             return $this->redirectToRoute('commercant.show');
         }
-
         return $this->redirectToRoute('commercant.show');
+    }
+
+    /**
+     * @Route("/commercant/delete",name="commercant.delete")
+     * @Method({"GET"})
+     */
+    public function deleteCommercant(Request $request, Environment $twig, RegistryInterface $doctrine)
+    {
+        if(!$this->isCsrfTokenValid('delete_valide', $request->get('token'))) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+        }
+        $id=$request->request->get('commercant_id');
+        $produit=$doctrine->getRepository(Commercant::class)->find($id);
+        $em=$doctrine->getManager();
+        $em->remove($produit);
+        $em->flush();
+        return $this->redirectToRoute('produit.show');
     }
 
 }

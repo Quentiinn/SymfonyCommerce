@@ -81,7 +81,7 @@ class Commercant
     /**
      * @return date
      */
-    public function getDateInstallation(): date
+    public function getDateInstallation(): \DateTime
     {
         return $this->dateInstallation;
     }
