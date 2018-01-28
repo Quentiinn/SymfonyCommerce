@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Commercant;
 use App\Entity\TypeCommercant;
+use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,7 +50,7 @@ class CommercantController extends Controller
      * @Route("/commercant/add",name="commercant.add")
      * @Method({"GET"})
      */
-    public function addProduit(Request $request, Environment $twig, RegistryInterface $doctrine)
+    public function addCommercant(Request $request, Environment $twig, RegistryInterface $doctrine)
     {
         $typeCommercant=$doctrine->getRepository(TypeCommercant::class)->findAll();
 
@@ -99,19 +100,92 @@ class CommercantController extends Controller
 
     /**
      * @Route("/commercant/delete",name="commercant.delete")
-     * @Method({"GET"})
+     * @Method({"DELETE"})
      */
     public function deleteCommercant(Request $request, Environment $twig, RegistryInterface $doctrine)
     {
-        if(!$this->isCsrfTokenValid('delete_valide', $request->get('token'))) {
+        //permet de verifier les tokens
+        if(!$this->isCsrfTokenValid('delete_valid', $request->get('token'))) {
             throw new InvalidCsrfTokenException('Invalid CSRF token');
         }
         $id=$request->request->get('commercant_id');
-        $produit=$doctrine->getRepository(Commercant::class)->find($id);
+        $commercant=$doctrine->getRepository(Commercant::class)->find($id);
         $em=$doctrine->getManager();
-        $em->remove($produit);
+        $em->remove($commercant);
         $em->flush();
-        return $this->redirectToRoute('produit.show');
+        return $this->redirectToRoute('commercant.show');
     }
 
+    /**
+     * @Route("/commercant/edit/{id}",name="commercant.edit", requirements={"id" = "\d+"})
+     * @Method({"GET"})
+     */
+    public function editProduit(Request $request, Environment $twig, RegistryInterface $doctrine,$id)
+    {
+        // A modifier
+        $conn = $this->get('database_connection');
+        $statement = $conn->executeQuery('SELECT id,id_type_commercant,noms,prix_location,date_installation
+    FROM commercants WHERE id= ? LIMIT 1;',[$id]);
+        $produit = $statement->fetch();
+        $typeCommercants = $conn->fetchAll('SELECT id,noms
+    FROM type_commercants ORDER BY id;');
+        // fin A modifier
+
+
+        $produits=$doctrine->getRepository(Commercant::class)->find($id);
+        dump($produits);
+
+
+        return $this->render('commercant/editCommercant.html.twig', ['donnees' => $produits,'typeCommercants'=> $typeCommercants]);
+    }
+
+    /**
+     * @Route("/commercant/validFormEdit",name="commercant.validFormEdit")
+     * @Method({"POST"})
+     */
+    public function validFormEditCommercant(Request $request)
+    {
+        $donnees['id']=$request->request->get('id');
+        $donnees['noms']=htmlspecialchars($request->request->get('nom'));
+        $donnees['prixLocation']=htmlspecialchars($request->request->get('prix'));
+        $donnees['dateInstallation']=htmlspecialchars($request->request->get('date'));
+        $donnees['idTypeCommercant']=htmlspecialchars($request->request->get('idTypeCommercant'));
+
+        $erreurs=array();
+        if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['noms']))) $erreurs['nom']='Le nom doit être composé de 2 lettres minimum';
+        if(! is_numeric($donnees['idTypeCommercant']))$erreurs['idTypeCommercant']='Veuillez saisir un type de commercant';
+        if(! is_numeric($donnees['prixLocation']))$erreurs['prix']='Veuillez saisir une valeur numérique';
+        if($donnees['dateInstallation'] == "")$erreurs['date']='Veuillez saisir une date';
+
+        if(! empty($erreurs))
+        {
+            // A modifier
+            $conn = $this->get('database_connection');
+            $typeCommercants = $conn->fetchAll('SELECT id,noms  FROM type_commercants ORDER BY id;');
+            // fin A modifier
+            return $this->render('commercant/editCommercant.html.twig', ['donnees'=>$donnees,'erreurs'=>$erreurs,'typeCommercants'=> $typeCommercants]);
+        }
+        else
+        {
+
+            $em = $this->getDoctrine()->getManager();
+            $commercant = $em->getRepository(Commercant::class)->find($donnees['id']);
+
+            if (!$commercant) {
+                throw $this->createNotFoundException(
+                    'No product found for id '.$donnees['id']
+                );
+            }
+
+            $date = DateTime::createFromFormat("j/m/Y" , $donnees['date']);
+            $commercant->setNoms($donnees['nom']);
+            $commercant->setDateInstallation($date);
+            $commercant->setPrixLocation($donnees['prix']);
+            $em->flush();
+
+            return $this->redirectToRoute('commercant.show');
+        }
+
+        return $this->redirectToRoute('commercant.show');
+    }
 }

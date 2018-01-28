@@ -1,9 +1,9 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    <form method="post" action="{{ path('commercant.validFormAdd') }}">
+    <form method="post" action="{{ path('commercant.validFormEdit') }}">
         <div class="row">
             <fieldset>
-                <legend>Creer un produit (twig)</legend>
+                <legend>Creer un commercant </legend>
                 <label>Nom :
                     <input name="nom"  type="text"  size="18" value="{{donnees.noms|default('')}}" />
                     {% if erreurs.nom is defined %}
@@ -11,9 +11,10 @@
                     {% endif %}
                 </label>
                 <label>Type de commercant :
+
                     <select name="idTypeCommercant">
                         {% if  donnees.idTypeCommercant is not defined or donnees.idTypeCommercant is empty   %}
-                            <option value="">Veuillez sélectionner un produit</option>
+                            <option value="">Veuillez sélectionner un type de commercant</option>
                         {% endif %}
                         {% for typeCommercant in typeCommercants %}
                             <option value="{{ typeCommercant.id }}"
@@ -33,11 +34,12 @@
                     {% endif %}
                 </label>
                 <label>Date de location
-                    <input name="date"  type="text"  size="18" value="{{donnees.dateLocation|default('')}}"/>
+                    <input name="date"  type="text"  size="18" value="{{donnees.dateInstallation|date("d/m/Y")|default('')}}"/>
                     {% if erreurs.date is defined %}
                         <small class="error">{{erreurs.date}}</small>
                     {% endif %}
                 </label>
+                <input type="hidden" name="id" value="{{ donnees.id }}">
                 <input type="submit" name="creerCommercant" value="créer" />
             </fieldset>
         </div>

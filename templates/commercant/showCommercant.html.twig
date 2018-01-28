@@ -24,7 +24,7 @@
                         <td>{{commercant.dateInstallation | date("d/m/Y")}}</td>
                         <td>{{commercant.prixLocation}}</td>
                         <td>
-                            <a href="{#}{ path('commercant.edit', {id: commercant.id}) }#}">modifier</a>
+                            <a href="{{ path('commercant.edit', {id: commercant.id}) }}">modifier</a>
                             <form action="{{ url('commercant.delete') }}" method="POST">
                                 <input type="hidden" name="token" value="{{ csrf_token('delete_valid') }}">
                                 <input type="hidden" name="commercant_id" value="{{ commercant.id }}">
