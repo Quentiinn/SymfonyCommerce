@@ -141,10 +141,11 @@ class CommercantController extends Controller
 
     /**
      * @Route("/commercant/validFormEdit",name="commercant.validFormEdit")
-     * @Method({"POST"})
+     * @Method({"PUT"})
      */
     public function validFormEditCommercant(Request $request)
     {
+
         $donnees['id']=$request->request->get('id');
         $donnees['noms']=htmlspecialchars($request->request->get('nom'));
         $donnees['prixLocation']=htmlspecialchars($request->request->get('prix'));
@@ -177,10 +178,10 @@ class CommercantController extends Controller
                 );
             }
 
-            $date = DateTime::createFromFormat("j/m/Y" , $donnees['date']);
-            $commercant->setNoms($donnees['nom']);
+            $date = DateTime::createFromFormat("j/m/Y" , $donnees['dateInstallation']);
+            $commercant->setNoms($donnees['noms']);
             $commercant->setDateInstallation($date);
-            $commercant->setPrixLocation($donnees['prix']);
+            $commercant->setPrixLocation($donnees['prixLocation']);
             $em->flush();
 
             return $this->redirectToRoute('commercant.show');

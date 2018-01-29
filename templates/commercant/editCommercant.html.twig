@@ -1,6 +1,9 @@
 {% extends "base.html.twig" %}
 {% block body %}
     <form method="post" action="{{ path('commercant.validFormEdit') }}">
+        <input type="hidden" name="id" value="{{ donnees.id }}">
+        <input type="hidden" name="_method" value="PUT">
+
         <div class="row">
             <fieldset>
                 <legend>Creer un commercant </legend>
@@ -39,7 +42,6 @@
                         <small class="error">{{erreurs.date}}</small>
                     {% endif %}
                 </label>
-                <input type="hidden" name="id" value="{{ donnees.id }}">
                 <input type="submit" name="creerCommercant" value="créer" />
             </fieldset>
         </div>
