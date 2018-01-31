@@ -1,0 +1,78 @@
+{% extends "/base.html.twig" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1>Recapitulatifs des types de commercants</h1>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>nom</th>
+                    <th>Actions</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for type in data if data is not empty %}
+                    <tr>
+                        <td>{{type.id}}</td>
+                        <td>{{type.noms}}</td>
+                        <td>
+                            <form  action="{{ url('typecommercant.delete') }}" method="POST" class="delete">
+                                <input type="hidden" name="token" value="{{ csrf_token('delete_valid_type') }}">
+                                <input type="hidden" name="type_commercant_id" value="{{ type.id }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button class="btn btn-danger" type="submit">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td>Pas de type de commercants</td></tr>
+                {% endfor %}
+                <tbody>
+            </table>
+            <a class="btn btn-primary" href="{{ path('typecommercant.add') }}"> Ajouter un type de commercant </a>
+
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modal_delete">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Suppression d'un commercant</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Etes-vous sûr de supprimer le commerçant ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="delete_commercant">Oui</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function() {
+            var supp;
+
+            $(".delete").submit(function (e) {
+                supp = $(this);
+                e.preventDefault();
+                $("#modal_delete").modal("show");
+            })
+
+
+            $("#delete_commercant").on("click", function () {
+                supp[0].submit();
+            })
+        });
+
+    </script>
+{% endblock %}
+
+

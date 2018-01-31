@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Ajout d'un type commercant</h1>
+                <form method="post" action="{{ path('typecommercant.validFormAdd') }}">
+
+
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" class="form-control" id="nom" name="nom" placeholder="Enter un nom">
+                        {% if erreurs.nom is defined %}
+                            <small class="error">{{erreurs.nom}}</small>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Créer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

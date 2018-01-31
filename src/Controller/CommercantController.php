@@ -33,15 +33,7 @@ class CommercantController extends Controller
      */
     public function showCommercant(Request $request , Environment $twig , RegistryInterface $doctrine){
 
-//        $detailsProduits=$doctrine->getRepository(Produit::class)->getProduits();
-
         $commercants=$doctrine->getRepository(Commercant::class)->findAll();
-        /*$produit=$doctrine->getRepository(Produit::class)->find(1);
-        $typeProduit=$doctrine->getRepository(TypeProduit::class)->find(1);
-        $produit->setTypeProduitId($typeProduit);
-        $doctrine->getEntityManager()->persist($produit);
-        $doctrine->getEntityManager()->flush();    // commit des opérations
-        */
 
         return new Response($twig->render('commercant/showCommercant.html.twig' , ['data' => $commercants]));
     }
