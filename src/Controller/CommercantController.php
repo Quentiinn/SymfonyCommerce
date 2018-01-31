@@ -145,7 +145,7 @@ class CommercantController extends Controller
      */
     public function validFormEditCommercant(Request $request)
     {
-
+        $em = $this->getDoctrine()->getManager();
         $donnees['id']=$request->request->get('id');
         $donnees['noms']=htmlspecialchars($request->request->get('nom'));
         $donnees['prixLocation']=htmlspecialchars($request->request->get('prix'));
@@ -160,16 +160,13 @@ class CommercantController extends Controller
 
         if(! empty($erreurs))
         {
-            // A modifier
-            $conn = $this->get('database_connection');
-            $typeCommercants = $conn->fetchAll('SELECT id,noms  FROM type_commercants ORDER BY id;');
-            // fin A modifier
+            $typeCommercants = $em->getRepository(TypeCommercant::class)->findAll();
             return $this->render('commercant/editCommercant.html.twig', ['donnees'=>$donnees,'erreurs'=>$erreurs,'typeCommercants'=> $typeCommercants]);
         }
         else
         {
 
-            $em = $this->getDoctrine()->getManager();
+
             $commercant = $em->getRepository(Commercant::class)->find($donnees['id']);
 
             if (!$commercant) {

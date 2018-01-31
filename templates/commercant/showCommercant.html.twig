@@ -2,9 +2,8 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <a href="{{ path('commercant.add') }}"> Ajouter un commercant </a>
-            <table>
-                <caption>Recapitulatifs des commercants</caption>
+            <h1>Recapitulatifs des commercants</h1>
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>id</th>
@@ -24,13 +23,13 @@
                         <td>{{commercant.dateInstallation | date("d/m/Y")}}</td>
                         <td>{{commercant.prixLocation}}</td>
                         <td>
-                            <a href="{{ path('commercant.edit', {id: commercant.id}) }}">modifier</a>
-                            <form action="{{ url('commercant.delete') }}" method="POST" class="delete">
+                            <a class="btn btn-secondary" href="{{ path('commercant.edit', {id: commercant.id}) }}">modifier</a>
+                            <form  action="{{ url('commercant.delete') }}" method="POST" class="delete">
                                 <input type="hidden" name="token" value="{{ csrf_token('delete_valid') }}">
                                 <input type="hidden" name="commercant_id" value="{{ commercant.id }}">
                                 <input type="hidden" name="_method" value="DELETE">
 
-                                <button type="submit">Supprimer</button>
+                                <button class="btn btn-danger" type="submit">Supprimer</button>
                             </form>
                         </td>
                     </tr>
@@ -39,6 +38,8 @@
                 {% endfor %}
                 <tbody>
             </table>
+            <a class="btn btn-primary" href="{{ path('commercant.add') }}"> Ajouter un commercant </a>
+
         </div>
     </div>
 
