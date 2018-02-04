@@ -43,6 +43,28 @@
         </div>
     </div>
 
+    <div class="container">
+        <h1>Nombre de commercant par type</h1>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Nombre de commercant</th>
+                <th>Pourcentage</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commercant in typesCommercant if typesCommercant is not empty %}
+            <tr>
+                <td>{{commercant.noms}}</td>
+                <td>{{commercant.count}}</td>
+                <td>{{ ((commercant.count / nbCommercant) * 100) |round(1 , 'floor')}} %</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 
     <div class="modal fade" id="modal_delete">
         <div class="modal-dialog" role="document">

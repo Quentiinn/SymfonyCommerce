@@ -33,9 +33,13 @@ class CommercantController extends Controller
      */
     public function showCommercant(Request $request , Environment $twig , RegistryInterface $doctrine){
 
+        $typesCom = $doctrine->getRepository(Commercant::class)->calculNbType();
+
+        $types = $doctrine->getRepository(Commercant::class)->nbCommercant();
+
         $commercants=$doctrine->getRepository(Commercant::class)->findAll();
 
-        return new Response($twig->render('commercant/showCommercant.html.twig' , ['data' => $commercants]));
+        return new Response($twig->render('commercant/showCommercant.html.twig' , ['data' => $commercants , 'typesCommercant' => $typesCom , 'nbCommercant' => $types]));
     }
 
     /**

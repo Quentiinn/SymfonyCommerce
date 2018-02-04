@@ -34,4 +34,7 @@ class TypeCommercantRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
+
+
+
 }
