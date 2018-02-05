@@ -13,11 +13,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 
 class CommercantController extends Controller
 {
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_USER')")
      * @Route("/commercant", name="commercant.index")
      * @Method({"GET"})
      */
@@ -28,6 +30,7 @@ class CommercantController extends Controller
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_USER')")
      * @Route("commercant/show",name="commercant.show")
      * @Method({"GET"})
      */
@@ -43,6 +46,7 @@ class CommercantController extends Controller
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/commercant/add",name="commercant.add")
      * @Method({"GET"})
      */
@@ -55,11 +59,18 @@ class CommercantController extends Controller
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/commercant/validFormAdd",name="commercant.validFormAdd")
      * @Method({"POST"})
      */
     public function validFormAddAction(Request $request, Environment $twig, RegistryInterface $doctrine)
     {
+
+
+        if(!$this->isCsrfTokenValid('add_valid', $request->get('token'))) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+        }
+
         $donnees['nom']=htmlspecialchars($request->request->get('nom'));
         $donnees['prix']=htmlspecialchars($request->request->get('prix'));
         $donnees['date']=htmlspecialchars($request->request->get('date'));
@@ -69,7 +80,7 @@ class CommercantController extends Controller
         if ((! preg_match("/^[A-Za-z ]{2,}/",$donnees['nom']))) $erreurs['nom']='Le nom doit être composé de 2 lettres minimum';
         if(! is_numeric($donnees['idTypeCommercant']))$erreurs['idTypeCommercant']='Veuillez saisir un type de commercant';
         if(! is_numeric($donnees['prix']))$erreurs['prix']='Veuillez saisir une valeur numérique';
-        if($donnees['date'] == "")$erreurs['date']='Veuillez saisir une date';
+        if(!$this->helper_date($donnees['date']))$erreurs['date']='Veuillez saisir une date';
 
 
         if(! empty($erreurs))
@@ -95,6 +106,7 @@ class CommercantController extends Controller
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/commercant/delete",name="commercant.delete")
      * @Method({"DELETE"})
      */
@@ -113,6 +125,7 @@ class CommercantController extends Controller
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/commercant/edit/{id}",name="commercant.edit", requirements={"id" = "\d+"})
      * @Method({"GET"})
      */
@@ -129,18 +142,22 @@ class CommercantController extends Controller
 
 
         $produits=$doctrine->getRepository(Commercant::class)->find($id);
-        dump($produits);
 
 
         return $this->render('commercant/editCommercant.html.twig', ['donnees' => $produits,'typeCommercants'=> $typeCommercants]);
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/commercant/validFormEdit",name="commercant.validFormEdit")
      * @Method({"PUT"})
      */
     public function validFormEditCommercant(Request $request)
     {
+
+        if(!$this->isCsrfTokenValid('edit_valid', $request->get('token'))) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+        }
         $em = $this->getDoctrine()->getManager();
         $donnees['id']=$request->request->get('id');
         $donnees['noms']=htmlspecialchars($request->request->get('nom'));
@@ -181,5 +198,18 @@ class CommercantController extends Controller
         }
 
         return $this->redirectToRoute('commercant.show');
+    }
+
+
+    public function helper_date($date){
+        $tab = explode("/" , $date);
+        if ($tab[0] >= 1 && $tab[0] <= 31){
+            if ($tab[1] >= 1 && $tab[1] <= 12){
+                if (strlen($tab[2])){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

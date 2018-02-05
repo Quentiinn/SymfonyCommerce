@@ -9,9 +9,11 @@
                         <th>id</th>
                         <th>nom</th>
                         <th>type</th>
-                        <th>prix</th>
                         <th>date</th>
+                        <th>prix</th>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <th>opération</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -21,7 +23,8 @@
                         <td>{{commercant.noms}}</td>
                         <td>{{commercant.idTypeCommercant.noms | default("id Null")}}</td>
                         <td>{{commercant.dateInstallation | date("d/m/Y")}}</td>
-                        <td>{{commercant.prixLocation}}</td>
+                        <td>{{commercant.prixLocation}} €</td>
+                        {% if is_granted('ROLE_ADMIN') %}
                         <td>
                             <a class="btn btn-secondary" href="{{ path('commercant.edit', {id: commercant.id}) }}">modifier</a>
                             <form  action="{{ url('commercant.delete') }}" method="POST" class="delete">
@@ -32,14 +35,16 @@
                                 <button class="btn btn-danger" type="submit">Supprimer</button>
                             </form>
                         </td>
+                        {% endif %}
                     </tr>
                 {% else %}
                     <tr><td>Pas de commercants</td></tr>
                 {% endfor %}
                 <tbody>
             </table>
+            {% if is_granted('ROLE_ADMIN') %}
             <a class="btn btn-primary" href="{{ path('commercant.add') }}"> Ajouter un commercant </a>
-
+            {% endif %}
         </div>
     </div>
 

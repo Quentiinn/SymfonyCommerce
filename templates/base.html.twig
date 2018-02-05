@@ -25,7 +25,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('typecommercant.index') }}">Type de commercant</a>
                             </li>
-
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('logout') }}">Déconnexion</a>
+                            </li>
+                            {% endif %}
                         </ul>
                     </div>
                 </nav>

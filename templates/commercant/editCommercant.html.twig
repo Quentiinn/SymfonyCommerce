@@ -42,6 +42,7 @@
                         <small class="error">{{erreurs.date}}</small>
                     {% endif %}
                 </label>
+                <input type="hidden" name="token" value="{{ csrf_token('edit_valid') }}">
                 <input type="submit" name="creerCommercant" value="créer" />
             </fieldset>
         </div>

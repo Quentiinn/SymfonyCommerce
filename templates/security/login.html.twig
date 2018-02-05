@@ -5,12 +5,10 @@
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
+    <div class="container">
     <form action="{{ path('default') }}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}" />
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password" />
+
 
         {#
             If you want to control the URL the user
@@ -18,6 +16,23 @@
             <input type="hidden" name="_target_path" value="/account" />
         #}
 
-        <button type="submit">login</button>
+
+        <div class="form-group">
+
+            <label for="username">Username</label>
+
+            <input class="form-control" type="text" id="username" name="_username" value="{{ last_username }}" />
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="password">Password</label>
+
+            <input class="form-control" type="password" id="password" name="_password" />
+
+        </div>
+        <button type="submit" class="btn btn-primary">login</button>
     </form>
+    </div>
 {% endblock %}

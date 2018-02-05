@@ -123,15 +123,7 @@ class User implements UserInterface, \Serializable
             $this->password,
             ) = unserialize($serialized);
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function getRoles()
-    {
-        return ['ROLE_USER'];
-    }
-
+    
     /**
      * @inheritDoc
      */
@@ -146,5 +138,22 @@ class User implements UserInterface, \Serializable
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+
+    public function getRoles()
+    {
+        if ($this->roles)
+            return [$this->roles];
+        else
+            return ['ROLE_USER'];
+    }
+/////////////////////////////////////////////////////////
+
+    public function setRoles(string $roles)
+    {
+        $this->roles = $roles;
+        // allows for chaining
+        return $this;
     }
 }

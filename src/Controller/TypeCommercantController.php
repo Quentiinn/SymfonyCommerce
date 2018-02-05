@@ -10,11 +10,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 
 
 class TypeCommercantController extends Controller
 {
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_USER')")
      * @Route("/type-commercant", name="typecommercant.index")
      */
     public function index()
@@ -24,6 +27,7 @@ class TypeCommercantController extends Controller
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_USER')")
      * @Route("type-commercant/show",name="typecommercant.show")
      */
     public function showTypeCommercant(Request $request , Environment $twig , RegistryInterface $doctrine){
@@ -33,6 +37,7 @@ class TypeCommercantController extends Controller
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/type-commercant/add",name="typecommercant.add")
      */
     public function addTypeCommercant(Request $request, Environment $twig, RegistryInterface $doctrine)
@@ -42,11 +47,15 @@ class TypeCommercantController extends Controller
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/type-commercant/validFormAdd",name="typecommercant.validFormAdd")
      * @Method({"POST"})
      */
     public function validFormAddAction(Request $request, Environment $twig, RegistryInterface $doctrine)
     {
+        if(!$this->isCsrfTokenValid('add_type_valid', $request->get('token'))) {
+            throw new InvalidCsrfTokenException('Invalid CSRF token');
+        }
         $donnees['nom']=htmlspecialchars($request->request->get('nom'));
 
         $erreurs=array();
@@ -71,6 +80,7 @@ class TypeCommercantController extends Controller
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/type-commercant/delete",name="typecommercant.delete")
      * @Method({"DELETE"})
      */
